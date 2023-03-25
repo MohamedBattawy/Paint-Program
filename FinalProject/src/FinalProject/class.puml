@@ -1,0 +1,272 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+class AdapterFactory{
++createMouseAdapter(s:String ):MouseAdapter
+}
+class ColorShape{
+ - shape :Shape
+ - color :Color
+ # Object clone()
+ + ColorShape(shape :Shape, color :Color)
+ +  getShape():Shape
+ + setShape(shape :Shape):void
+ + getColor():Color
+ + setColor(color: Color): void
+}
+
+class GlobalVariables{
+ + {static}shapeList :ShapeList
+ + {static} originator :Originator
+ + {static} caretaker :Caretaker
+ + {static}  currentShape:Integer
+ + {static}  nextColor:Color
+
+}
+class MyColorChooser{}
+class PaintBoard{
++ getColor(): Color
++ setColor(color :Color):void
+- color :Color
++PaintBoard()
++ paintComponent( g:Graphics):void
+
+}
+class ShapeList{
++ clone():Object
+}
+class ShapeMoverFactory{
++  createShapeMover( s:Shape):ShapeMover
+}
+
+class ShapePasterFactory{
++ createShapePaster(s:Shape):ShapePaster
+}
+package ResizeStrategy <<Rectangle>>{
+interface ShapeResizer{
+ Resize(s:Shape, amount:Float):Shape;
+ }
+ class LineResizer{
+  +  Resize(s:Shape,  amount:float):Shape
+ }
+ class TriangleResizer{
+  + Resize(s:Shape, amount:Float):Shape
+}
+class CircleResizer{
++Resize(s:Shape, amount:Float ):Shape
+}
+class RectangleResizer{
++ Resize( s:Shape, amount:float):Shape
+}
+class SquareResizer{
+ + Resize(s:Shape,amount:Float):Shape
+}
+   class CircleResizer implements ShapeResizer
+   class TriangleResizer implements ShapeResizer
+   class SquareResizer implements ShapeResizer
+   class LineResizer implements ShapeResizer
+   class RectangleResizer implements ShapeResizer
+}
+class ShapeResizerFactory{
++  createShapeResizer( s:Shape):ShapeResizer
+}
+class PaintGUI{
+   - {static} instance:paint
+   - drawLineRadioButton:JRadioButton
+   - drawTriangleRadioButton:JRadioButton
+   - drawSquareRadioButton:JRadioButton
+   - drawRectangleRadioButton:JRadioButton
+   - drawCircleRadioButton:JRadioButton
+   - copyRadioButton:JRadioButton
+   - deleteRadioButton:JRadioButton
+   - resizeRadioButton:JRadioButton
+   - moveRadioButton:JRadioButton
+   - redoButton:JButton
+   - myColorChooser1:myColorChooser
+   - modifyColorRadioButton:JRadioButton
+   - buttonGroup1:ButtonGroup
+   - actionListener:ActionListener
+   - mouseAdapter:MouseAdapter
+   - paint()
+   + {static} getInstance():paint
+   + {static}  main( args:String[] ):void
+}
+   ShapeResizerFactory --> ResizeStrategy : creates >
+   package MouseAdapterStrategy <<rectangle>>{
+   class CopyAdapter{
+   -xClick, yClick, xClick2, yClick2:Integer
+   + CopyAdapter()
+   -found :Boolean
+      - colorShape: ColorShape
+      - copy: ColorShape
+       +mouseClicked( e:MouseEvent):void
+
+   }
+   class MoveAdapter{
+    -xPress,yPress:Integer
+    - s:ColorShape
+       + MoveAdapter()
+       + mousePressed( e:MouseEvent):void
+       + mouseDragged( e:MouseEvent):void
+       }
+   class DeleteAdapter{
+    -s:ColorShape
+     -xClick , yClick:Integer
+     + DeleteAdapter()
+      +mouseClicked( e:MouseEvent):void
+   }
+   class DrawAdapter{
+    -type:String
+     -  s:Shape
+     -  x1,x2,y1,y2:Integer
+       + DrawAdapter(type:String )
+       +  mouseDragged(e:MouseEvent):void
+       +  mousePressed(e:MouseEvent):void
+   }
+   class ResizeAdapter{
+      -  xPress,yPress:Integer
+      -  s:ColorShape
+      + ResizeAdapter()
+      + mouseWheelMoved(e:MouseWheelEvent ):void
+   }
+   class ColorAdapter{
+   + ColorAdapter()
+   + mouseClicked(e:MouseEvent):void
+   }
+      class ResizeAdapter extends MouseAdapter
+      class CopyAdapter extends MouseAdapter
+      class ColorAdapter extends MouseAdapter
+      class DeleteAdapter extends MouseAdapter
+      class DrawAdapter extends MouseAdapter
+      class MoveAdapter extends MouseAdapter
+   }
+   ResizeAdapter --> ShapeResizerFactory : "asks" >
+    package ShapeCopyStrategy <<rectangle>>{
+    interface ShapePaster{
+   paste(s:Shape, dx:Integer, dy:Integer):Shape;
+      }
+   class CirclePaster implements ShapePaster
+   class TrianglePaster implements ShapePaster
+   class SquarePaster implements ShapePaster
+   class RectanglePaster implements ShapePaster
+   class LinePaster implements ShapePaster
+   class CirclePaster{
+   + paste( s:Shape, dx:Integer, dy:Integer):Shape
+   }
+   class TrianglePaster{
+   + paste(s:Shape, dx:Integer, dy:Integer):Shape
+   }
+   class SquarePaster{
+   +paste(s:Shape,  dx:Integer, dy:Integer):Shape
+   }
+   class LinePaster{
+    +paste( s:Shape, dx:Integer, dy:Integer):Shape
+    }
+    class RectanglePaster{
+     +paste(s:Shape , dx:Integer, dy:Integer) :Shape
+    }
+    }
+    package ShapeMoverStrategy <<rectangle>>{
+    interface ShapeMover{
+     +move(s:Shape,  dx:Integer, dy:Integer):Shape;
+    }
+    class TriangleMover{
+    + move(s:Shape ,  dx:Integer, dy:Integer):Shape
+    }
+    class SquareMover{
+    + move(s:Shape, dx:Integer, dy:Integer):Shape
+    }
+    class RectangleMover{
+    +  move(s:Shape, dx:Integer, dy:Integer):Shape
+    }
+    class CircleMover{
+     + move( s:Shape, dx:Integer, dy:Integer):Shape
+    }
+    class LineMover{
+     + move( s:Shape, dx:Integer, dy:Integer):Shape
+    }
+      class CircleMover implements ShapeMover
+       class RectangleMover implements ShapeMover
+       class SquareMover implements ShapeMover
+       class TriangleMover implements ShapeMover
+       class LineMover implements ShapeMover
+    }
+        package ShapeMaker_Strategy <<rectangle>>{
+        class TriangleMaker{
+         -x: int[]
+           - y: int[]
+            +TriangleMaker(x1,x2,y1,y2:Integer)
+             +  make():Shape
+        }
+        class CircleMaker{
+        + CircleMaker( x1,x2, y1,y2:Integer)
+         + make():Shape
+        }
+        class LineMaker{
+        + LineMaker(x1,x2,y1,y2:Integer)
+        + make():Shape
+        }
+        class SquareMaker{
+        + SquareMaker(x1,x2,y1,y2:Integer)
+        +make(): Shape
+        }
+        class RectangleMaker{
+        + RectangleMaker(x1,x2,y1, y2:Integer)
+        +  make() :Shape
+        }
+           ShapeMakeStrategy <|-- CircleMaker
+           ShapeMakeStrategy <|-- RectangleMaker
+           ShapeMakeStrategy <|-- SquareMaker
+           ShapeMakeStrategy <|-- TriangleMaker
+           ShapeMakeStrategy <|-- LineMaker
+        }
+         abstract class ShapeMakeStrategy{
+         - x1,x2,y1,y2:Integer
+         + ShapeMakerStrategy(x1,x2, y1, y2:Integer)
+         +{abstract}  make ():Shape
+         +getX1():Integer
+         +getY1():Integer
+         +getX2():Integer
+         +getY2():Integer
+         + setX1( x1:Integer):void
+         + setY1( y1:Integer):void
+         + setX2( x2:Integer):void
+         + setY2( y2:Integer):void
+         }
+           DrawAdapter --> ShapeMakerFactory : "asks" >
+           ShapeMakerFactory --> ShapeMaker_Strategy : creates >
+           CopyAdapter --> ShapePasterFactory : "asks" >
+           ShapePasterFactory --> ShapeCopyStrategy : creates >
+           MoveAdapter --> ShapeMoverFactory : "asks" >
+           ShapeMoverFactory --> ShapeMoverStrategy : creates >
+           AdapterFactory --> MouseAdapterStrategy : creates >
+           package Memento_ <<rectangle>>{
+           class Memento{
+           -  shapeLinkedList:ShapeList
+           + Memento( shapeListSave:ShapeList)
+           +  getSavedList() :ShapeList
+           }
+           class Originator{
+           - list:ShapeList
+           + set(newList:ShapeList ):void
+           + storeInMemento():Memento
+           +  restoreFromMemento(memento:Memento ): ShapeList
+           }
+           class Caretaker{
+           -savedShapeLists:ArrayList<Memento>
+           + addMemento( m:Memento):void
+           + getMemento( index:Integer):Memento
+           }
+
+                      Caretaker o--> Memento
+                      Originator --> Memento : saves/gets
+           }
+           MouseAdapterStrategy --> Memento_
+           PaintGUI *-- MyColorChooser : getColor
+           PaintGUI *-- PaintBoard
+           ShapeList o-- ColorShape
+           GlobalVariables *-- ShapeList
+           GlobalVariables *-- Memento_
+           MouseAdapterStrategy --> PaintBoard : paints
+           MouseAdapterStrategy --> ShapeList : creates/deletes >
+@enduml
